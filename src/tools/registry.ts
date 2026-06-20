@@ -3,10 +3,12 @@ import HelloWorld from './hello-world'
 import StringTable from './string-table'
 import StringConverter from './string-converter'
 import EncodeDecode from './encode-decode'
+import NumberBase from './number-base'
 
 export const tools: Tool[] = [
   HelloWorld,
   StringTable,
   StringConverter,
   EncodeDecode,
+  NumberBase,
 ]
