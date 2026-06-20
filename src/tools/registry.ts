@@ -15,6 +15,7 @@ import RegexTester from './regex-tester'
 import HexViewer from './hex-viewer'
 import PathTraversal from './path-traversal'
 import XSSEncoder from './xss-encoder'
+import HttpRequest from './http-request'
 
 export const tools: Tool[] = [
   HelloWorld,
@@ -33,4 +34,5 @@ export const tools: Tool[] = [
   HexViewer,
   PathTraversal,
   XSSEncoder,
+  HttpRequest,
 ]
