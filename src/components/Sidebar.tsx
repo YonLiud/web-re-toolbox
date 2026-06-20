@@ -1,10 +1,19 @@
+import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { Sun, Moon, GithubLogo } from '@phosphor-icons/react'
+import { Sun, Moon, GithubLogo, MagnifyingGlass } from '@phosphor-icons/react'
 import { tools } from '../tools/registry'
 import { useTheme } from '../context/ThemeContext'
 
 export function Sidebar() {
   const { theme, toggle } = useTheme()
+  const [query, setQuery] = useState('')
+
+  const filtered = query.trim()
+    ? tools.filter(({ meta }) =>
+        meta.name.toLowerCase().includes(query.toLowerCase()) ||
+        meta.description.toLowerCase().includes(query.toLowerCase())
+      )
+    : tools
 
   return (
     <aside className="w-56 flex flex-col h-screen bg-vs-sidebar border-r border-vs-border shrink-0">
@@ -12,13 +21,30 @@ export function Sidebar() {
         <NavLink to="/" className="text-vs-text text-xs font-semibold tracking-widest uppercase hover:text-vs-accent transition-colors">yon's toolbox</NavLink>
       </div>
 
+      <div className="px-3 py-2 border-b border-vs-border">
+        <div className="flex items-center gap-2 bg-vs-bg border border-vs-border rounded px-2 py-1">
+          <MagnifyingGlass size={12} className="text-vs-muted shrink-0" />
+          <input
+            type="text"
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            placeholder="Search tools..."
+            className="bg-transparent text-vs-text text-xs outline-none w-full placeholder:text-vs-muted"
+          />
+        </div>
+      </div>
+
       <nav className="flex-1 overflow-y-auto py-1">
-        {tools.map(({ meta }) => {
+        {filtered.length === 0 && (
+          <p className="text-vs-muted text-xs px-4 py-3">No tools found.</p>
+        )}
+        {filtered.map(({ meta }) => {
           const Icon = meta.icon
           return (
             <NavLink
               key={meta.slug}
               to={`/${meta.slug}`}
+              onClick={() => setQuery('')}
               className={({ isActive }) =>
                 `flex items-center gap-2.5 py-1.5 text-sm transition-colors border-l-2 pl-[14px] ${
                   isActive
