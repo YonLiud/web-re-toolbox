@@ -17,6 +17,7 @@ import XSSEncoder from './xss-encoder'
 import HttpRequest from './http-request'
 import CSPAnalyzer from './csp-analyzer'
 import SQLi from './sqli'
+import ShellUpgrade from './shell-upgrade'
 
 export const tools: Tool[] = [
   // Web Pentest
@@ -37,6 +38,7 @@ export const tools: Tool[] = [
   StringTable,
   StringConverter,
   BitwiseCalculator,
+  ShellUpgrade,
   // Network / System
   IPSubnet,
   UnixPermissions,
