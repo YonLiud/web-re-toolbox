@@ -18,6 +18,7 @@ import HttpRequest from './http-request'
 import CSPAnalyzer from './csp-analyzer'
 import SQLi from './sqli'
 import ShellUpgrade from './shell-upgrade'
+import ReverseShell from './reverse-shell'
 
 export const tools: Tool[] = [
   // Web Pentest
@@ -38,6 +39,7 @@ export const tools: Tool[] = [
   StringTable,
   StringConverter,
   BitwiseCalculator,
+  ReverseShell,
   ShellUpgrade,
   // Network / System
   IPSubnet,
