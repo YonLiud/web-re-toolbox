@@ -6,6 +6,7 @@ export interface ToolMeta {
   name: string
   description: string
   icon: ComponentType<IconProps>
+  tags: string[]
 }
 
 export interface Tool {

@@ -1,19 +1,29 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { NavLink } from 'react-router-dom'
 import { Sun, Moon, GithubLogo, MagnifyingGlass } from '@phosphor-icons/react'
 import { tools } from '../tools/registry'
 import { useTheme } from '../context/ThemeContext'
 
+const ALL_TAGS = Array.from(
+  new Set(tools.flatMap(t => t.meta.tags))
+).sort()
+
 export function Sidebar() {
   const { theme, toggle } = useTheme()
   const [query, setQuery] = useState('')
+  const [activeTag, setActiveTag] = useState<string | null>(null)
 
-  const filtered = query.trim()
-    ? tools.filter(({ meta }) =>
+  const filtered = useMemo(() => {
+    let list = tools
+    if (activeTag)
+      list = list.filter(({ meta }) => meta.tags.includes(activeTag))
+    if (query.trim())
+      list = list.filter(({ meta }) =>
         meta.name.toLowerCase().includes(query.toLowerCase()) ||
         meta.description.toLowerCase().includes(query.toLowerCase())
       )
-    : tools
+    return list
+  }, [query, activeTag])
 
   return (
     <aside className="w-56 flex flex-col h-screen bg-vs-sidebar border-r border-vs-border shrink-0">
@@ -21,7 +31,7 @@ export function Sidebar() {
         <NavLink to="/" className="text-vs-text text-xs font-semibold tracking-widest uppercase hover:text-vs-accent transition-colors">yon's toolbox</NavLink>
       </div>
 
-      <div className="px-3 py-2 border-b border-vs-border">
+      <div className="px-3 py-2 border-b border-vs-border flex flex-col gap-2">
         <div className="flex items-center gap-2 bg-vs-bg border border-vs-border rounded px-2 py-1">
           <MagnifyingGlass size={12} className="text-vs-muted shrink-0" />
           <input
@@ -31,6 +41,22 @@ export function Sidebar() {
             placeholder="Search tools..."
             className="bg-transparent text-vs-text text-xs outline-none w-full placeholder:text-vs-muted"
           />
+        </div>
+
+        <div className="flex flex-wrap gap-1">
+          {ALL_TAGS.map(tag => (
+            <button
+              key={tag}
+              onClick={() => setActiveTag(prev => prev === tag ? null : tag)}
+              className={`text-[10px] px-1.5 py-0.5 rounded border transition-colors ${
+                activeTag === tag
+                  ? 'border-vs-accent text-vs-accent bg-vs-accent/10'
+                  : 'border-vs-border text-vs-muted hover:border-vs-text hover:text-vs-text'
+              }`}
+            >
+              {tag}
+            </button>
+          ))}
         </div>
       </div>
 

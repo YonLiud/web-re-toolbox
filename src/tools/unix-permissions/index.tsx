@@ -182,6 +182,7 @@ export default {
     name: 'Unix Permissions',
     description: 'Calculate and visualize Unix file permission bits',
     icon: Lock,
+    tags: ['linux', 'util'],
   },
   Component: UnixPermissions,
 } satisfies Tool

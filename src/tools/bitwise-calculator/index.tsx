@@ -206,6 +206,7 @@ export default {
     name: 'Bitwise Calculator',
     description: 'AND, OR, XOR, NOT, and bit shifts with visual bit display',
     icon: ChartBar,
+    tags: ['binary', 're'],
   },
   Component: BitwiseCalculator,
 } satisfies Tool

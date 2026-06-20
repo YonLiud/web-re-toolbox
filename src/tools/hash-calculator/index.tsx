@@ -81,6 +81,7 @@ export default {
     name: 'Hash Calculator',
     description: 'Compute SHA-1, SHA-256, SHA-384, SHA-512 hashes',
     icon: Scales,
+    tags: ['crypto', 'hash'],
   },
   Component: HashCalculator,
 } satisfies Tool

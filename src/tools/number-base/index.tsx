@@ -112,6 +112,7 @@ export default {
     name: 'Number Base',
     description: 'Convert numbers between decimal, hex, octal, and binary',
     icon: Hash,
+    tags: ['encoding', 'binary'],
   },
   Component: NumberBase,
 } satisfies Tool

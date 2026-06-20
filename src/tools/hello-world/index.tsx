@@ -18,6 +18,7 @@ export default {
     name: 'Hello World',
     description: 'Your first tool',
     icon: Terminal,
+    tags: ['util'],
   },
   Component: HelloWorld,
 } satisfies Tool

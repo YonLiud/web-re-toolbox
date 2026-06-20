@@ -20,23 +20,28 @@ import CSPAnalyzer from './csp-analyzer'
 import SQLi from './sqli'
 
 export const tools: Tool[] = [
-  HelloWorld,
-  StringTable,
-  StringConverter,
-  EncodeDecode,
-  NumberBase,
-  HashIdentifier,
-  HashCalculator,
-  UnixPermissions,
-  JWTDecoder,
-  XORCalculator,
-  IPSubnet,
-  BitwiseCalculator,
-  RegexTester,
-  HexViewer,
-  PathTraversal,
+  // Web Pentest
+  SQLi,
   XSSEncoder,
+  PathTraversal,
   HttpRequest,
   CSPAnalyzer,
-  SQLi,
+  JWTDecoder,
+  // Encoding / Crypto
+  EncodeDecode,
+  HashCalculator,
+  HashIdentifier,
+  XORCalculator,
+  NumberBase,
+  // Reverse Engineering
+  HexViewer,
+  StringTable,
+  StringConverter,
+  BitwiseCalculator,
+  // Network / System
+  IPSubnet,
+  UnixPermissions,
+  RegexTester,
+  // Misc
+  HelloWorld,
 ]

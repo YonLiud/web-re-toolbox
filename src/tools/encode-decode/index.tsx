@@ -177,6 +177,7 @@ export default {
     name: 'Encode / Decode',
     description: 'Encode and decode strings using common formats',
     icon: LockKey,
+    tags: ['encoding'],
   },
   Component: EncodeDecode,
 } satisfies Tool

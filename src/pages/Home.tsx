@@ -15,9 +15,19 @@ export function Home() {
               className="flex flex-col gap-3 p-4 rounded border border-vs-border bg-vs-sidebar hover:bg-vs-hover transition-colors"
             >
               <Icon size={24} />
-              <div>
+              <div className="flex flex-col gap-1.5">
                 <p className="text-sm font-medium">{meta.name}</p>
                 <p className="text-vs-muted text-xs mt-0.5">{meta.description}</p>
+                <div className="flex flex-wrap gap-1 mt-0.5">
+                  {meta.tags.map(tag => (
+                    <span
+                      key={tag}
+                      className="text-[9px] px-1 py-px rounded border border-vs-border text-vs-muted"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </div>
             </Link>
           )

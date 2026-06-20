@@ -195,6 +195,7 @@ export default {
     name: 'Path Traversal',
     description: 'Build traversal payloads with WAF and filter bypass encodings',
     icon: FolderOpen,
+    tags: ['web', 'pentest', 'bypass', 'encoding'],
   },
   Component: PathTraversalEncoder,
 } satisfies Tool

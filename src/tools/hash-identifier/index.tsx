@@ -144,6 +144,7 @@ export default {
     name: 'Hash Identifier',
     description: 'Identify the likely algorithm behind a hash string',
     icon: MagnifyingGlass,
+    tags: ['crypto', 'hash'],
   },
   Component: HashIdentifier,
 } satisfies Tool

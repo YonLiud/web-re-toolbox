@@ -216,6 +216,7 @@ export default {
     name: 'Hex Viewer',
     description: 'Classic hex dump with offset, hex bytes, and ASCII panel',
     icon: Code,
+    tags: ['re', 'binary'],
   },
   Component: HexViewerTool,
 } satisfies Tool

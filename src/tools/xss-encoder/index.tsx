@@ -187,6 +187,7 @@ export default {
     name: 'XSS / WAF Bypass',
     description: 'Build XSS payloads and encode strings to bypass WAF filters',
     icon: Bug,
+    tags: ['web', 'pentest', 'bypass', 'encoding'],
   },
   Component: XSSEncoder,
 } satisfies Tool

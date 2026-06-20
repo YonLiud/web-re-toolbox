@@ -397,6 +397,7 @@ export default {
     name: 'SQL Injection',
     description: 'Generate SQLi payloads by database and technique',
     icon: Database,
+    tags: ['web', 'pentest', 'bypass'],
   },
   Component: SQLiTool,
 } satisfies Tool

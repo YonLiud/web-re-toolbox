@@ -86,6 +86,7 @@ export default {
     name: 'String to Table',
     description: 'Visualize each character and its index',
     icon: Table,
+    tags: ['re', 'encoding'],
   },
   Component: StringTable,
 } satisfies Tool

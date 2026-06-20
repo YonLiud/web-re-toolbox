@@ -134,6 +134,7 @@ export default {
     name: 'JWT Decoder',
     description: 'Decode and inspect JSON Web Tokens',
     icon: Key,
+    tags: ['web', 'auth', 'encoding'],
   },
   Component: JWTDecoder,
 } satisfies Tool

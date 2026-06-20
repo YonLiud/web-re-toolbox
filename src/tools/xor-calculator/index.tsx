@@ -197,6 +197,7 @@ export default {
     name: 'XOR Calculator',
     description: 'XOR bytes with a key, or brute-force a single-byte key',
     icon: MathOperations,
+    tags: ['crypto', 'binary'],
   },
   Component: XORCalculator,
 } satisfies Tool

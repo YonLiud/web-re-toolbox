@@ -250,6 +250,7 @@ export default {
     name: 'Unicode Converter',
     description: 'Encode and decode strings across Unicode formats',
     icon: ArrowsLeftRight,
+    tags: ['encoding', 're'],
   },
   Component: StringConverter,
 } satisfies Tool

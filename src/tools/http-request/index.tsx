@@ -344,6 +344,7 @@ export default {
     name: 'HTTP Request Builder',
     description: 'Craft raw HTTP requests and cURL commands with custom headers',
     icon: Globe,
+    tags: ['web', 'pentest'],
   },
   Component: HttpRequestBuilder,
 } satisfies Tool

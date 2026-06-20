@@ -139,6 +139,7 @@ export default {
     name: 'IP Subnet',
     description: 'Calculate network ranges, masks, and host counts from CIDR',
     icon: NetworkSlash,
+    tags: ['network', 'pentest'],
   },
   Component: IPSubnet,
 } satisfies Tool

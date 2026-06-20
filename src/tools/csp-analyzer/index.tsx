@@ -243,6 +243,7 @@ export default {
     name: 'CSP Analyzer',
     description: 'Parse Content-Security-Policy headers and surface misconfigurations',
     icon: ShieldWarning,
+    tags: ['web', 'pentest'],
   },
   Component: CSPAnalyzer,
 } satisfies Tool

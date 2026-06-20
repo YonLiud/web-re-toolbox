@@ -205,6 +205,7 @@ export default {
     name: 'Regex Tester',
     description: 'Test regular expressions with live match highlighting',
     icon: MagnifyingGlass,
+    tags: ['util'],
   },
   Component: RegexTester,
 } satisfies Tool
