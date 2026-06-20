@@ -105,9 +105,9 @@ const EXAMPLE = `default-src 'self'; script-src 'self' 'unsafe-inline' https://c
 function CSPAnalyzer() {
   const [input, setInput] = useState('')
 
-  const { directives, allIssues, missingIssues } = useMemo(() => {
+  const { directives, allIssues } = useMemo(() => {
     const cleaned = input.trim().replace(/^content-security-policy:\s*/i, '')
-    if (!cleaned) return { directives: [], allIssues: [], missingIssues: [] }
+    if (!cleaned) return { directives: [], allIssues: [] }
 
     const directives = parse(cleaned)
     const directiveNames = new Set(directives.map(d => d.name))
@@ -134,7 +134,7 @@ function CSPAnalyzer() {
       })
     }
 
-    return { directives, allIssues: [...allIssues, ...missingIssues], missingIssues }
+    return { directives, allIssues: [...allIssues, ...missingIssues] }
   }, [input])
 
   const score = scoreLabel(allIssues)

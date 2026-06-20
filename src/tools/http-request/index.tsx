@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import { Globe, Copy, Check, Plus, X } from '@phosphor-icons/react'
 import { ToolLayout } from '../../components/ToolLayout'
 import type { Tool } from '../types'
@@ -55,6 +55,128 @@ function buildCurl(method: Method, url: string, headers: Header[], body: string)
   if (HAS_BODY.has(method) && body) parts.push(`  -d '${body.replace(/'/g, "'\\''")}'`)
   return parts.join(' \\\n')
 }
+
+// --- JSON body editor ---
+
+const LINE_H = 20 // px — must match both textarea and gutter
+
+function parseJsonError(msg: string, text: string): { error: string; line: number | null } {
+  const lineM = msg.match(/at line (\d+)/)
+  if (lineM) return { error: msg.replace(/\s+at line.+$/, ''), line: parseInt(lineM[1]) }
+  const posM = msg.match(/at position (\d+)/)
+  if (posM) {
+    const pos = parseInt(posM[1])
+    return { error: msg.replace(/\s+at position.+$/, ''), line: text.slice(0, pos).split('\n').length }
+  }
+  return { error: msg.replace(/^SyntaxError:\s*/, ''), line: null }
+}
+
+function BodyEditor({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const taRef     = useRef<HTMLTextAreaElement>(null)
+  const gutterRef = useRef<HTMLDivElement>(null)
+
+  const lineCount = Math.max(1, value.split('\n').length)
+  const isJson    = value.trimStart().startsWith('{') || value.trimStart().startsWith('[')
+
+  const jsonState = useMemo(() => {
+    if (!isJson || !value.trim()) return { error: null, line: null }
+    try { JSON.parse(value); return { error: null, line: null } }
+    catch (e) { return parseJsonError((e as Error).message, value) }
+  }, [value, isJson])
+
+  const format = () => {
+    try { onChange(JSON.stringify(JSON.parse(value.trim()), null, 2)) } catch {}
+  }
+
+  const syncScroll = () => {
+    if (taRef.current && gutterRef.current)
+      gutterRef.current.scrollTop = taRef.current.scrollTop
+  }
+
+  const hasError  = isJson && !!jsonState.error
+  const isValid   = isJson && !jsonState.error && value.trim().length > 0
+  const canFormat = isValid
+
+  return (
+    <div className="flex flex-col gap-1.5">
+      <div className="flex items-center justify-between">
+        <label className="text-vs-muted text-xs uppercase tracking-widest">Body</label>
+        <div className="flex items-center gap-3">
+          {isValid && (
+            <span className="text-green-400 text-xs">✓ valid json</span>
+          )}
+          {hasError && (
+            <span
+              className="text-red-400 text-xs font-mono truncate max-w-[260px]"
+              title={jsonState.error ?? ''}
+            >
+              ✕ {jsonState.error && jsonState.error.length > 42
+                ? jsonState.error.slice(0, 42) + '…'
+                : jsonState.error}
+            </span>
+          )}
+          <button
+            onClick={format}
+            disabled={!canFormat}
+            className={`text-xs px-2 py-0.5 rounded border transition-colors ${
+              canFormat
+                ? 'border-vs-border text-vs-muted hover:bg-vs-hover hover:text-vs-text'
+                : 'border-vs-border text-vs-border opacity-30 cursor-not-allowed'
+            }`}
+          >
+            Format
+          </button>
+        </div>
+      </div>
+
+      <div className={`flex border rounded overflow-hidden transition-colors ${
+        hasError ? 'border-red-500/50' : 'border-vs-border focus-within:border-vs-accent'
+      }`}>
+        {/* Line number gutter */}
+        <div
+          ref={gutterRef}
+          className="overflow-hidden select-none bg-vs-active border-r border-vs-border py-2"
+          style={{ lineHeight: `${LINE_H}px` }}
+        >
+          {Array.from({ length: lineCount }, (_, i) => (
+            <div
+              key={i}
+              style={{ height: LINE_H, lineHeight: `${LINE_H}px` }}
+              className={`text-right text-xs font-mono px-2 ${
+                jsonState.line === i + 1
+                  ? 'text-red-400 bg-red-500/10'
+                  : 'text-vs-muted'
+              }`}
+            >
+              {i + 1}
+            </div>
+          ))}
+        </div>
+
+        {/* Textarea */}
+        <textarea
+          ref={taRef}
+          value={value}
+          onChange={e => onChange(e.target.value)}
+          onScroll={syncScroll}
+          rows={8}
+          spellCheck={false}
+          placeholder={'{\n  "key": "value"\n}'}
+          style={{ lineHeight: `${LINE_H}px` }}
+          className="flex-1 bg-vs-sidebar text-vs-text text-sm font-mono px-3 py-2 outline-none resize-none"
+        />
+      </div>
+
+      {hasError && jsonState.line && (
+        <p className="text-red-400 text-xs font-mono">
+          line {jsonState.line}: {jsonState.error}
+        </p>
+      )}
+    </div>
+  )
+}
+
+// ---------------------------------
 
 function CopyBtn({ value, size = 13 }: { value: string; size?: number }) {
   const [copied, setCopied] = useState(false)
@@ -203,17 +325,7 @@ function HttpRequestBuilder() {
 
         {/* Body */}
         {HAS_BODY.has(method) && (
-          <div className="flex flex-col gap-1.5">
-            <label className="text-vs-muted text-xs uppercase tracking-widest">Body</label>
-            <textarea
-              value={body}
-              onChange={e => setBody(e.target.value)}
-              placeholder='{"key": "value"}'
-              rows={5}
-              spellCheck={false}
-              className="w-full bg-vs-sidebar border border-vs-border text-vs-text text-sm font-mono px-3 py-2 rounded outline-none focus:border-vs-accent transition-colors resize-none"
-            />
-          </div>
+          <BodyEditor value={body} onChange={setBody} />
         )}
 
         <div className="border-t border-vs-border pt-4 flex flex-col gap-4">
