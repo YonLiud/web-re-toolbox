@@ -5,6 +5,7 @@ import StringConverter from './string-converter'
 import EncodeDecode from './encode-decode'
 import NumberBase from './number-base'
 import HashIdentifier from './hash-identifier'
+import HashCalculator from './hash-calculator'
 import UnixPermissions from './unix-permissions'
 
 export const tools: Tool[] = [
@@ -14,5 +15,6 @@ export const tools: Tool[] = [
   EncodeDecode,
   NumberBase,
   HashIdentifier,
+  HashCalculator,
   UnixPermissions,
 ]
