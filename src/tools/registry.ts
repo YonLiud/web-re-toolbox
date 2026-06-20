@@ -17,6 +17,7 @@ import PathTraversal from './path-traversal'
 import XSSEncoder from './xss-encoder'
 import HttpRequest from './http-request'
 import CSPAnalyzer from './csp-analyzer'
+import SQLi from './sqli'
 
 export const tools: Tool[] = [
   HelloWorld,
@@ -37,4 +38,5 @@ export const tools: Tool[] = [
   XSSEncoder,
   HttpRequest,
   CSPAnalyzer,
+  SQLi,
 ]
