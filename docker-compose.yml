@@ -1,0 +1,19 @@
+services:
+  yonliud-site:
+    build:
+      context: .
+      args:
+        VITE_BASE_PATH: ${VITE_BASE_PATH:-/}
+    restart: unless-stopped
+    networks:
+      - proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.yonliud-site.rule=Host(`yonliud.dev`) && PathPrefix(`/toolbox`)"
+      - "traefik.http.routers.yonliud-site.entrypoints=web"
+      - "traefik.http.services.yonliud-site.loadbalancer.server.port=80"
+
+networks:
+  proxy:
+    external: true
