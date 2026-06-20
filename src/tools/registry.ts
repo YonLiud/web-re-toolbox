@@ -11,4 +11,6 @@ export const tools: Tool[] = [
   StringConverter,
   EncodeDecode,
   NumberBase,
+HashIdentifier,
+  UnixPermissions,
 ]
