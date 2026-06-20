@@ -13,6 +13,7 @@ import IPSubnet from './ip-subnet'
 import BitwiseCalculator from './bitwise-calculator'
 import RegexTester from './regex-tester'
 import HexViewer from './hex-viewer'
+import PathTraversal from './path-traversal'
 
 export const tools: Tool[] = [
   HelloWorld,
@@ -29,4 +30,5 @@ export const tools: Tool[] = [
   BitwiseCalculator,
   RegexTester,
   HexViewer,
+  PathTraversal,
 ]
