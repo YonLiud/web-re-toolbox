@@ -11,6 +11,7 @@ import JWTDecoder from './jwt-decoder'
 import XORCalculator from './xor-calculator'
 import IPSubnet from './ip-subnet'
 import BitwiseCalculator from './bitwise-calculator'
+import RegexTester from './regex-tester'
 
 export const tools: Tool[] = [
   HelloWorld,
@@ -25,4 +26,5 @@ export const tools: Tool[] = [
   XORCalculator,
   IPSubnet,
   BitwiseCalculator,
+  RegexTester,
 ]
