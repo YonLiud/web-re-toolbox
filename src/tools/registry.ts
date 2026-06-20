@@ -16,6 +16,7 @@ import HexViewer from './hex-viewer'
 import PathTraversal from './path-traversal'
 import XSSEncoder from './xss-encoder'
 import HttpRequest from './http-request'
+import CSPAnalyzer from './csp-analyzer'
 
 export const tools: Tool[] = [
   HelloWorld,
@@ -35,4 +36,5 @@ export const tools: Tool[] = [
   PathTraversal,
   XSSEncoder,
   HttpRequest,
+  CSPAnalyzer,
 ]
