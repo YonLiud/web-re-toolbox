@@ -10,6 +10,7 @@ import UnixPermissions from './unix-permissions'
 import JWTDecoder from './jwt-decoder'
 import XORCalculator from './xor-calculator'
 import IPSubnet from './ip-subnet'
+import BitwiseCalculator from './bitwise-calculator'
 
 export const tools: Tool[] = [
   HelloWorld,
@@ -23,4 +24,5 @@ export const tools: Tool[] = [
   JWTDecoder,
   XORCalculator,
   IPSubnet,
+  BitwiseCalculator,
 ]
