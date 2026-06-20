@@ -14,6 +14,7 @@ import BitwiseCalculator from './bitwise-calculator'
 import RegexTester from './regex-tester'
 import HexViewer from './hex-viewer'
 import PathTraversal from './path-traversal'
+import XSSEncoder from './xss-encoder'
 
 export const tools: Tool[] = [
   HelloWorld,
@@ -31,4 +32,5 @@ export const tools: Tool[] = [
   RegexTester,
   HexViewer,
   PathTraversal,
+  XSSEncoder,
 ]
