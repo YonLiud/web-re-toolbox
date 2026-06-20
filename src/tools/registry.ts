@@ -8,6 +8,7 @@ import HashIdentifier from './hash-identifier'
 import HashCalculator from './hash-calculator'
 import UnixPermissions from './unix-permissions'
 import JWTDecoder from './jwt-decoder'
+import XORCalculator from './xor-calculator'
 
 export const tools: Tool[] = [
   HelloWorld,
@@ -19,4 +20,5 @@ export const tools: Tool[] = [
   HashCalculator,
   UnixPermissions,
   JWTDecoder,
+  XORCalculator,
 ]
