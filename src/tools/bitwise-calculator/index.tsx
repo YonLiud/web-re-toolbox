@@ -55,10 +55,10 @@ function ResultRow({ label, value, base, width }: { label: string; value: bigint
 }
 
 function NumberInput({
-  label, value, onChange, base, width, error
+  label, value, onChange, base, error
 }: {
   label: string; value: string; onChange: (v: string) => void
-  base: Base; width: Width; error: boolean
+  base: Base; width?: Width; error: boolean
 }) {
   const placeholder = base === 'hex' ? 'FF' : base === 'bin' ? '11001100' : '255'
   return (
