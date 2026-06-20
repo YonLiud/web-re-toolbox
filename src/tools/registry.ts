@@ -7,6 +7,7 @@ import NumberBase from './number-base'
 import HashIdentifier from './hash-identifier'
 import HashCalculator from './hash-calculator'
 import UnixPermissions from './unix-permissions'
+import JWTDecoder from './jwt-decoder'
 
 export const tools: Tool[] = [
   HelloWorld,
@@ -17,4 +18,5 @@ export const tools: Tool[] = [
   HashIdentifier,
   HashCalculator,
   UnixPermissions,
+  JWTDecoder,
 ]
