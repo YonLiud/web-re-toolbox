@@ -1,6 +1,8 @@
 import { useState, useMemo } from 'react'
-import { Database, Copy, Check } from '@phosphor-icons/react'
+import { Database } from '@phosphor-icons/react'
 import { ToolLayout } from '../../components/ToolLayout'
+import { PayloadList } from '../../components/PayloadList'
+import type { PayloadItem } from '../../components/PayloadList'
 import type { Tool } from '../types'
 
 type DB        = 'MySQL' | 'MSSQL' | 'PostgreSQL' | 'Oracle' | 'SQLite'
@@ -227,21 +229,6 @@ const TECH_BADGE: Record<Technique, string> = {
   OOB:     'bg-pink-500/20   text-pink-400',
 }
 
-// ----- components -----
-
-function CopyBtn({ value }: { value: string }) {
-  const [copied, setCopied] = useState(false)
-  return (
-    <button
-      onClick={() => { navigator.clipboard.writeText(value); setCopied(true); setTimeout(() => setCopied(false), 1500) }}
-      title="Copy"
-      className="shrink-0 p-1 rounded text-vs-muted hover:text-vs-text hover:bg-vs-active transition-colors"
-    >
-      {copied ? <Check size={13} weight="bold" className="text-green-400" /> : <Copy size={13} />}
-    </button>
-  )
-}
-
 function SQLiTool() {
   const [db,       setDb]     = useState<DB>('MySQL')
   const [techs,    setTechs]  = useState<Set<Technique>>(new Set(['Union', 'Boolean', 'Time', 'Error']))
@@ -263,10 +250,17 @@ function SQLiTool() {
     cmt:   ' ' + DB_CMT[db],
   }), [quote, cols, table, colName, delay, db])
 
-  const rows = useMemo(() =>
+  const items = useMemo<PayloadItem[]>(() =>
     DB_PAYLOADS[db]
       .filter(p => techs.has(p.technique))
-      .map(p => ({ ...p, result: p.build(ctx) })),
+      .map((p, i) => ({
+        id:        String(i),
+        badge:     p.technique,
+        badgeClass: TECH_BADGE[p.technique],
+        label:     p.label,
+        value:     p.build(ctx),
+        note:      p.note,
+      })),
     [db, techs, ctx]
   )
 
@@ -276,7 +270,6 @@ function SQLiTool() {
     <ToolLayout title="SQL Injection" description="Generate SQLi payloads by database and technique">
       <div className="flex flex-col gap-5 max-w-3xl">
 
-        {/* DB selector */}
         <div className="flex flex-col gap-1.5">
           <span className="text-vs-muted text-xs uppercase tracking-widest">Database</span>
           <div className="flex border border-vs-border rounded overflow-hidden">
@@ -289,7 +282,6 @@ function SQLiTool() {
           </div>
         </div>
 
-        {/* Technique toggles */}
         <div className="flex flex-col gap-1.5">
           <span className="text-vs-muted text-xs uppercase tracking-widest">Technique</span>
           <div className="flex gap-2 flex-wrap">
@@ -302,7 +294,6 @@ function SQLiTool() {
           </div>
         </div>
 
-        {/* Context inputs */}
         <div className="flex flex-col gap-3">
           <span className="text-vs-muted text-xs uppercase tracking-widest">Context</span>
           <div className="flex flex-wrap gap-3">
@@ -323,7 +314,7 @@ function SQLiTool() {
               <label className="text-vs-muted text-xs">Columns (UNION)</label>
               <div className="flex items-stretch border border-vs-border rounded overflow-hidden">
                 <button onClick={() => setCols(c => Math.max(1, c - 1))} className="px-3 text-vs-muted hover:text-vs-text hover:bg-vs-hover transition-colors text-base leading-none">−</button>
-                <span className="px-3 py-1.5 text-vs-text text-sm font-mono bg-vs-sidebar min-w-[2.5rem] text-center border-x border-vs-border">{cols}</span>
+                <span className="px-3 py-1.5 text-vs-text text-sm font-mono bg-vs-sidebar min-w-10 text-center border-x border-vs-border">{cols}</span>
                 <button onClick={() => setCols(c => Math.min(20, c + 1))} className="px-3 text-vs-muted hover:text-vs-text hover:bg-vs-hover transition-colors text-base leading-none">+</button>
               </div>
             </div>
@@ -332,7 +323,7 @@ function SQLiTool() {
               <label className="text-vs-muted text-xs">Delay (s)</label>
               <div className="flex items-stretch border border-vs-border rounded overflow-hidden">
                 <button onClick={() => setDelay(d => Math.max(1, d - 1))} className="px-3 text-vs-muted hover:text-vs-text hover:bg-vs-hover transition-colors text-base leading-none">−</button>
-                <span className="px-3 py-1.5 text-vs-text text-sm font-mono bg-vs-sidebar min-w-[2.5rem] text-center border-x border-vs-border">{delay}</span>
+                <span className="px-3 py-1.5 text-vs-text text-sm font-mono bg-vs-sidebar min-w-10 text-center border-x border-vs-border">{delay}</span>
                 <button onClick={() => setDelay(d => Math.min(30, d + 1))} className="px-3 text-vs-muted hover:text-vs-text hover:bg-vs-hover transition-colors text-base leading-none">+</button>
               </div>
             </div>
@@ -355,36 +346,7 @@ function SQLiTool() {
           </div>
         </div>
 
-        {/* Results */}
-        {rows.length > 0 ? (
-          <div className="flex flex-col gap-1.5">
-            <div className="flex items-center justify-between">
-              <span className="text-vs-muted text-xs uppercase tracking-widest">Payloads</span>
-              <span className="text-vs-muted text-xs">{rows.length} payload{rows.length !== 1 ? 's' : ''}</span>
-            </div>
-            <div className="flex flex-col gap-1">
-              {rows.map((p, i) => (
-                <div key={i} className="flex items-start gap-2 bg-vs-sidebar border border-vs-border rounded px-3 py-2 hover:border-vs-accent/40 transition-colors group">
-                  <div className="flex flex-col gap-0.5 shrink-0 pt-0.5">
-                    <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${TECH_BADGE[p.technique]}`}>
-                      {p.technique}
-                    </span>
-                  </div>
-                  <div className="flex flex-col flex-1 min-w-0 gap-0.5">
-                    <span className="text-vs-muted text-[10px] leading-tight">{p.label}</span>
-                    <span className="text-vs-text text-xs font-mono break-all leading-snug">{p.result}</span>
-                    {p.note && <span className="text-yellow-500/80 text-[10px] leading-tight">⚠ {p.note}</span>}
-                  </div>
-                  <CopyBtn value={p.result} />
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <p className="text-vs-muted text-xs text-center py-6 border border-dashed border-vs-border rounded">
-            Toggle at least one technique above.
-          </p>
-        )}
+        <PayloadList items={items} emptyMessage="Toggle at least one technique above." />
 
       </div>
     </ToolLayout>

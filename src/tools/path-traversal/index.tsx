@@ -1,6 +1,9 @@
 import { useState, useMemo } from 'react'
-import { FolderOpen, Copy, Check } from '@phosphor-icons/react'
+import { FolderOpen } from '@phosphor-icons/react'
 import { ToolLayout } from '../../components/ToolLayout'
+import { FieldInput } from '../../components/FieldInput'
+import { PayloadList } from '../../components/PayloadList'
+import type { PayloadItem } from '../../components/PayloadList'
 import type { Tool } from '../types'
 
 type Category = 'Pattern' | 'URL' | 'Unicode' | 'OS' | 'Null'
@@ -60,40 +63,27 @@ const CAT_BADGE: Record<Category, string> = {
   Null:    'bg-red-500/20     text-red-400',
 }
 
-function CopyBtn({ value }: { value: string }) {
-  const [copied, setCopied] = useState(false)
-  const copy = () => {
-    navigator.clipboard.writeText(value)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 1500)
-  }
-  return (
-    <button
-      onClick={copy}
-      title="Copy"
-      className="shrink-0 p-1 rounded text-vs-muted hover:text-vs-text hover:bg-vs-active transition-colors"
-    >
-      {copied
-        ? <Check size={13} weight="bold" className="text-green-400" />
-        : <Copy size={13} />}
-    </button>
-  )
-}
-
 function PathTraversalEncoder() {
-  const [path, setPath]         = useState('etc/passwd')
-  const [depth, setDepth]       = useState(3)
-  const [cats, setCats]         = useState<Set<Category>>(new Set(CATEGORIES))
+  const [path, setPath]   = useState('etc/passwd')
+  const [depth, setDepth] = useState(3)
+  const [cats, setCats]   = useState<Set<Category>>(new Set(CATEGORIES))
 
   const toggleCat = (c: Category) =>
     setCats(prev => { const n = new Set(prev); if (n.has(c)) n.delete(c); else n.add(c); return n })
 
   const cleanPath = path.replace(/^\/+/, '')
 
-  const rows = useMemo(
+  const items = useMemo<PayloadItem[]>(
     () => BYPASSES
       .filter(b => cats.has(b.category))
-      .map(b => ({ ...b, result: b.build(depth, cleanPath) })),
+      .map(b => ({
+        id:          b.id,
+        badge:       b.category,
+        badgeClass:  CAT_BADGE[b.category],
+        label:       b.label,
+        description: b.description,
+        value:       b.build(depth, cleanPath),
+      })),
     [cats, depth, cleanPath]
   )
 
@@ -104,36 +94,18 @@ function PathTraversalEncoder() {
     >
       <div className="flex flex-col gap-5 max-w-2xl">
 
-        {/* Path + depth */}
         <div className="flex gap-3 items-end">
-          <div className="flex flex-col gap-1.5 flex-1">
-            <label className="text-vs-muted text-xs uppercase tracking-widest">Target path</label>
-            <input
-              type="text"
-              value={path}
-              onChange={e => setPath(e.target.value)}
-              placeholder="etc/passwd"
-              spellCheck={false}
-              className="w-full bg-vs-sidebar border border-vs-border text-vs-text text-sm font-mono px-3 py-2 rounded outline-none focus:border-vs-accent transition-colors"
-            />
-          </div>
+          <FieldInput label="Target path" value={path} onChange={setPath} placeholder="etc/passwd" />
           <div className="flex flex-col gap-1.5">
             <label className="text-vs-muted text-xs uppercase tracking-widest">Depth</label>
             <div className="flex items-stretch border border-vs-border rounded overflow-hidden">
-              <button
-                onClick={() => setDepth(d => Math.max(1, d - 1))}
-                className="px-3 text-vs-muted hover:text-vs-text hover:bg-vs-hover transition-colors text-base leading-none"
-              >−</button>
-              <span className="px-3 py-2 text-vs-text text-sm font-mono bg-vs-sidebar min-w-[2.5rem] text-center border-x border-vs-border">{depth}</span>
-              <button
-                onClick={() => setDepth(d => Math.min(10, d + 1))}
-                className="px-3 text-vs-muted hover:text-vs-text hover:bg-vs-hover transition-colors text-base leading-none"
-              >+</button>
+              <button onClick={() => setDepth(d => Math.max(1, d - 1))} className="px-3 text-vs-muted hover:text-vs-text hover:bg-vs-hover transition-colors text-base leading-none">−</button>
+              <span className="px-3 py-2 text-vs-text text-sm font-mono bg-vs-sidebar min-w-10 text-center border-x border-vs-border">{depth}</span>
+              <button onClick={() => setDepth(d => Math.min(10, d + 1))} className="px-3 text-vs-muted hover:text-vs-text hover:bg-vs-hover transition-colors text-base leading-none">+</button>
             </div>
           </div>
         </div>
 
-        {/* Category toggles */}
         <div className="flex flex-col gap-1.5">
           <span className="text-vs-muted text-xs uppercase tracking-widest">Bypass type</span>
           <div className="flex gap-2 flex-wrap">
@@ -151,38 +123,7 @@ function PathTraversalEncoder() {
           </div>
         </div>
 
-        {/* Results */}
-        {rows.length > 0 ? (
-          <div className="flex flex-col gap-1.5">
-            <div className="flex items-center justify-between">
-              <span className="text-vs-muted text-xs uppercase tracking-widest">Payloads</span>
-              <span className="text-vs-muted text-xs">{rows.length} variant{rows.length !== 1 ? 's' : ''}</span>
-            </div>
-            <div className="flex flex-col gap-1">
-              {rows.map(b => (
-                <div
-                  key={b.id}
-                  className="flex items-center gap-2 bg-vs-sidebar border border-vs-border rounded px-3 py-2 group hover:border-vs-accent/40 transition-colors"
-                >
-                  <span className={`shrink-0 text-[10px] font-mono px-1.5 py-0.5 rounded ${CAT_BADGE[b.category]}`}>
-                    {b.category}
-                  </span>
-                  <span
-                    title={b.description}
-                    className="flex-1 text-vs-text text-xs font-mono break-all"
-                  >
-                    {b.result}
-                  </span>
-                  <CopyBtn value={b.result} />
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <p className="text-vs-muted text-xs text-center py-6 border border-dashed border-vs-border rounded">
-            Toggle at least one bypass type above.
-          </p>
-        )}
+        <PayloadList items={items} />
 
       </div>
     </ToolLayout>

@@ -1,6 +1,7 @@
 import { useState, useMemo, useRef } from 'react'
-import { Globe, Copy, Check, Plus, X } from '@phosphor-icons/react'
+import { Globe, Plus, X } from '@phosphor-icons/react'
 import { ToolLayout } from '../../components/ToolLayout'
+import { CopyBtn } from '../../components/CopyBtn'
 import type { Tool } from '../types'
 
 type Method = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' | 'OPTIONS' | 'HEAD'
@@ -178,18 +179,6 @@ function BodyEditor({ value, onChange }: { value: string; onChange: (v: string) 
 
 // ---------------------------------
 
-function CopyBtn({ value, size = 13 }: { value: string; size?: number }) {
-  const [copied, setCopied] = useState(false)
-  return (
-    <button
-      onClick={() => { navigator.clipboard.writeText(value); setCopied(true); setTimeout(() => setCopied(false), 1500) }}
-      title="Copy"
-      className="shrink-0 p-1 rounded text-vs-muted hover:text-vs-text hover:bg-vs-active transition-colors"
-    >
-      {copied ? <Check size={size} weight="bold" className="text-green-400" /> : <Copy size={size} />}
-    </button>
-  )
-}
 
 function OutputBox({ label, value }: { label: string; value: string }) {
   return (
