@@ -19,28 +19,28 @@ import SQLi from './sqli'
 import ShellUpgrade from './shell-upgrade'
 import ReverseShell from './reverse-shell'
 
-export const tools: Tool[] = [
-  // Web Pentest
-  SQLi,
-  XSSEncoder,
-  PathTraversal,
-  HttpRequest,
-  JWTDecoder,
-  // Encoding / Crypto
-  EncodeDecode,
-  HashCalculator,
-  HashIdentifier,
-  XORCalculator,
-  NumberBase,
-  // Reverse Engineering
-  HexViewer,
-  StringTable,
-  StringConverter,
-  BitwiseCalculator,
-  ReverseShell,
-  ShellUpgrade,
-  // Network / System
-  IPSubnet,
-  UnixPermissions,
-  RegexTester,
+export interface ToolGroup {
+  name: string
+  tools: Tool[]
+}
+
+export const toolGroups: ToolGroup[] = [
+  {
+    name: 'Web & Pentest',
+    tools: [SQLi, XSSEncoder, PathTraversal, HttpRequest, JWTDecoder],
+  },
+  {
+    name: 'Encoding & Crypto',
+    tools: [EncodeDecode, HashCalculator, HashIdentifier, XORCalculator, NumberBase],
+  },
+  {
+    name: 'Reverse Engineering',
+    tools: [HexViewer, StringTable, StringConverter, BitwiseCalculator],
+  },
+  {
+    name: 'Shells & Network',
+    tools: [ReverseShell, ShellUpgrade, IPSubnet, UnixPermissions, RegexTester],
+  },
 ]
+
+export const tools: Tool[] = toolGroups.flatMap(g => g.tools)

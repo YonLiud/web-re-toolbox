@@ -1,37 +1,39 @@
 import { Link } from 'react-router-dom'
-import { tools } from '../tools/registry'
+import { ArrowRight } from '@phosphor-icons/react'
+import { toolGroups } from '../tools/registry'
 
 export function Home() {
   return (
-    <div className="p-6 bg-vs-bg h-full text-vs-text">
-      <p className="text-vs-muted text-xs uppercase tracking-widest mb-6">All Tools</p>
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-        {tools.map(({ meta }) => {
-          const Icon = meta.icon
-          return (
-            <Link
-              key={meta.slug}
-              to={`/${meta.slug}`}
-              className="flex flex-col gap-3 p-4 rounded border border-vs-border bg-vs-sidebar hover:bg-vs-hover transition-colors"
-            >
-              <Icon size={24} />
-              <div className="flex flex-col gap-1.5">
-                <p className="text-sm font-medium">{meta.name}</p>
-                <p className="text-vs-muted text-xs mt-0.5">{meta.description}</p>
-                <div className="flex flex-wrap gap-1 mt-0.5">
-                  {meta.tags.map(tag => (
-                    <span
-                      key={tag}
-                      className="text-[9px] px-1 py-px rounded border border-vs-border text-vs-muted"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </Link>
-          )
-        })}
+    <div className="p-6 bg-vs-bg h-full overflow-auto">
+      <div className="max-w-2xl flex flex-col gap-8">
+        {toolGroups.map(group => (
+          <section key={group.name}>
+            <p className="text-vs-muted text-[10px] uppercase tracking-widest mb-2">{group.name}</p>
+            <div className="border border-vs-border rounded overflow-hidden">
+              {group.tools.map(({ meta }, i) => {
+                const Icon = meta.icon
+                return (
+                  <Link
+                    key={meta.slug}
+                    to={`/${meta.slug}`}
+                    className={`flex items-center gap-4 px-4 py-3 hover:bg-vs-hover transition-colors group ${
+                      i < group.tools.length - 1 ? 'border-b border-vs-border' : ''
+                    }`}
+                  >
+                    <div className="shrink-0 w-7 h-7 rounded flex items-center justify-center bg-vs-active text-vs-muted group-hover:text-vs-text transition-colors">
+                      <Icon size={14} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-vs-text text-sm font-medium leading-snug">{meta.name}</p>
+                      <p className="text-vs-muted text-xs truncate mt-0.5">{meta.description}</p>
+                    </div>
+                    <ArrowRight size={13} className="text-vs-border group-hover:text-vs-muted transition-colors shrink-0" />
+                  </Link>
+                )
+              })}
+            </div>
+          </section>
+        ))}
       </div>
     </div>
   )
