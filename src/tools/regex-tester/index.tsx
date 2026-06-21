@@ -83,7 +83,7 @@ function RegexTester() {
   const [text, setText] = useState('')
 
   const toggleFlag = (f: string) =>
-    setFlags(prev => { const next = new Set(prev); next.has(f) ? next.delete(f) : next.add(f); return next })
+    setFlags(prev => { const next = new Set(prev); if (next.has(f)) next.delete(f); else next.add(f); return next })
 
   const regex = useMemo(() => pattern ? buildRegex(pattern, flags) : null, [pattern, flags])
   const regexError = pattern && regex === null

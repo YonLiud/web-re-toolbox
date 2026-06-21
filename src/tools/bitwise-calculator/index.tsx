@@ -13,7 +13,7 @@ function parse(val: string, base: Base): bigint | null {
     if (base === 'dec') return BigInt(clean)
     if (base === 'hex') return /^[0-9a-fA-F]+$/.test(clean) ? BigInt('0x' + clean) : null
     if (base === 'bin') return /^[01]+$/.test(clean) ? BigInt('0b' + clean) : null
-  } catch {}
+  } catch { /* no-op */ }
   return null
 }
 

@@ -20,14 +20,12 @@ function HashCalculator() {
   const [copied, setCopied] = useState<Algorithm | null>(null)
 
   useEffect(() => {
-    if (!input) {
-      setHashes({ 'SHA-1': '', 'SHA-256': '', 'SHA-384': '', 'SHA-512': '' })
-      return
-    }
+    let cancelled = false
     ALGORITHMS.forEach(async algo => {
       const hash = await computeHash(input, algo)
-      setHashes(h => ({ ...h, [algo]: hash }))
+      if (!cancelled) setHashes(h => ({ ...h, [algo]: hash }))
     })
+    return () => { cancelled = true }
   }, [input])
 
   const copy = (algo: Algorithm) => {
@@ -54,7 +52,7 @@ function HashCalculator() {
               <div
                 className="flex-1 font-mono text-xs text-vs-text bg-vs-sidebar border border-vs-border rounded px-3 py-2 break-all min-h-[34px]"
               >
-                {hashes[algo]}
+                {input ? hashes[algo] : ''}
               </div>
               <button
                 onClick={() => copy(algo)}

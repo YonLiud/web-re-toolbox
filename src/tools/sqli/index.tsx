@@ -252,7 +252,7 @@ function SQLiTool() {
   const [delay,    setDelay]  = useState(5)
 
   const toggleTech = (t: Technique) =>
-    setTechs(prev => { const n = new Set(prev); n.has(t) ? n.delete(t) : n.add(t); return n })
+    setTechs(prev => { const n = new Set(prev); if (n.has(t)) n.delete(t); else n.add(t); return n })
 
   const ctx: Ctx = useMemo(() => ({
     q:     quote,

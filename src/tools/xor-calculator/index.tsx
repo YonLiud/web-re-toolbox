@@ -37,6 +37,24 @@ function isPrintable(bytes: Uint8Array): boolean {
   return Array.from(bytes).every(b => b >= 0x20 && b < 0x7f)
 }
 
+function ModeToggle({ mode, onChange }: { mode: Mode; onChange: (m: Mode) => void }) {
+  return (
+    <div className="flex border border-vs-border rounded overflow-hidden">
+      {(['text', 'hex'] as Mode[]).map(m => (
+        <button
+          key={m}
+          onClick={() => onChange(m)}
+          className={`px-2 py-1 text-xs transition-colors ${
+            mode === m ? 'bg-vs-active text-vs-text' : 'bg-vs-sidebar text-vs-muted hover:bg-vs-hover'
+          }`}
+        >
+          {m}
+        </button>
+      ))}
+    </div>
+  )
+}
+
 function XORCalculator() {
   const [input, setInput] = useState('')
   const [inputMode, setInputMode] = useState<Mode>('text')
@@ -70,24 +88,6 @@ function XORCalculator() {
 
   const inputError = input.trim() && inputBytes === null
   const keyError = key.trim() && keyBytes === null
-
-  function ModeToggle({ mode, onChange }: { mode: Mode; onChange: (m: Mode) => void }) {
-    return (
-      <div className="flex border border-vs-border rounded overflow-hidden">
-        {(['text', 'hex'] as Mode[]).map(m => (
-          <button
-            key={m}
-            onClick={() => onChange(m)}
-            className={`px-2 py-1 text-xs transition-colors ${
-              mode === m ? 'bg-vs-active text-vs-text' : 'bg-vs-sidebar text-vs-muted hover:bg-vs-hover'
-            }`}
-          >
-            {m}
-          </button>
-        ))}
-      </div>
-    )
-  }
 
   return (
     <ToolLayout title="XOR Calculator" description="XOR bytes with a key, or brute-force a single-byte key">

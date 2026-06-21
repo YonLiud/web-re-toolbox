@@ -85,7 +85,7 @@ function BodyEditor({ value, onChange }: { value: string; onChange: (v: string) 
   }, [value, isJson])
 
   const format = () => {
-    try { onChange(JSON.stringify(JSON.parse(value.trim()), null, 2)) } catch {}
+    try { onChange(JSON.stringify(JSON.parse(value.trim()), null, 2)) } catch { /* no-op */ }
   }
 
   const syncScroll = () => {
