@@ -86,7 +86,7 @@ function PathTraversalEncoder() {
   const [cats, setCats]         = useState<Set<Category>>(new Set(CATEGORIES))
 
   const toggleCat = (c: Category) =>
-    setCats(prev => { const n = new Set(prev); n.has(c) ? n.delete(c) : n.add(c); return n })
+    setCats(prev => { const n = new Set(prev); if (n.has(c)) n.delete(c); else n.add(c); return n })
 
   const cleanPath = path.replace(/^\/+/, '')
 

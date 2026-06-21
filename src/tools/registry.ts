@@ -15,7 +15,6 @@ import HexViewer from './hex-viewer'
 import PathTraversal from './path-traversal'
 import XSSEncoder from './xss-encoder'
 import HttpRequest from './http-request'
-import CSPAnalyzer from './csp-analyzer'
 import SQLi from './sqli'
 import ShellUpgrade from './shell-upgrade'
 import ReverseShell from './reverse-shell'
@@ -26,7 +25,6 @@ export const tools: Tool[] = [
   XSSEncoder,
   PathTraversal,
   HttpRequest,
-  CSPAnalyzer,
   JWTDecoder,
   // Encoding / Crypto
   EncodeDecode,
