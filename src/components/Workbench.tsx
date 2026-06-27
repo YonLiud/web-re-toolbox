@@ -9,7 +9,7 @@ type Option<T extends string> = {
 
 export function WorkbenchGrid({ children }: { children: ReactNode }) {
   return (
-    <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_22rem] items-start">
+    <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_21rem]">
       {children}
     </div>
   )
@@ -29,7 +29,7 @@ export function Panel({
   className?: string
 }) {
   return (
-    <section className={`border border-vs-border bg-vs-panel rounded-md ${className}`}>
+    <section className={`rounded-lg border border-vs-border bg-vs-panel/80 ${className}`}>
       {(title || eyebrow || actions) && (
         <div className="flex items-start justify-between gap-3 border-b border-vs-border px-4 py-3">
           <div className="min-w-0">
@@ -60,7 +60,7 @@ export function SegmentedControl<T extends string>({
   compact?: boolean
 }) {
   return (
-    <div className="inline-flex max-w-full overflow-hidden rounded-md border border-vs-border bg-vs-sidebar">
+    <div className="inline-flex max-w-full overflow-hidden rounded-md border border-vs-border bg-vs-input">
       {options.map(option => (
         <button
           key={option.value}
@@ -99,7 +99,7 @@ export function ToggleChip({
         'inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs transition-colors',
         selected
           ? 'border-vs-accent bg-vs-accent-soft text-vs-text'
-          : 'border-vs-border bg-vs-sidebar text-vs-muted hover:bg-vs-hover hover:text-vs-text',
+          : 'border-vs-border bg-vs-input text-vs-muted hover:bg-vs-hover hover:text-vs-text',
       ].join(' ')}
     >
       {selected && <Check size={12} weight="bold" className="text-vs-accent" />}
@@ -154,7 +154,7 @@ export function MetricStrip({
   return (
     <div className="grid grid-cols-2 gap-px overflow-hidden rounded-md border border-vs-border bg-vs-border sm:grid-cols-4">
       {items.map(item => (
-        <div key={item.label} className="bg-vs-sidebar px-3 py-2">
+        <div key={item.label} className="bg-vs-panel px-3 py-2">
           <p className="text-[10px] uppercase tracking-widest text-vs-muted">{item.label}</p>
           <p
             className={[
@@ -182,7 +182,7 @@ export function OutputBlock({
   muted?: boolean
 }) {
   return (
-    <div className="overflow-hidden rounded-md border border-vs-border bg-vs-sidebar">
+    <div className="overflow-hidden rounded-md border border-vs-border bg-vs-input">
       <div className="flex items-center justify-between gap-2 border-b border-vs-border px-3 py-2">
         <span className="text-[10px] uppercase tracking-widest text-vs-muted">{label}</span>
         {action}

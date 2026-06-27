@@ -1,45 +1,45 @@
 @import "tailwindcss";
 
 :root {
-  --vs-bg: #181a1f;
-  --vs-sidebar: #202329;
-  --vs-panel: #242832;
-  --vs-input: #171a20;
-  --vs-border: #343a45;
-  --vs-text: #d7dae0;
-  --vs-muted: #8b93a1;
-  --vs-accent: #4aa3ff;
-  --vs-accent-soft: rgba(74, 163, 255, 0.13);
-  --vs-hover: #2a303a;
-  --vs-active: #2d3542;
+  --vs-bg: #111318;
+  --vs-sidebar: #171a21;
+  --vs-panel: #1a1e26;
+  --vs-input: #12151b;
+  --vs-border: #2a303a;
+  --vs-text: #e3e7ee;
+  --vs-muted: #8f98a8;
+  --vs-accent: #7ab7ff;
+  --vs-accent-soft: rgba(122, 183, 255, 0.12);
+  --vs-hover: #202630;
+  --vs-active: #242c38;
 }
 
 [data-theme="dark"] {
-  --vs-bg: #181a1f;
-  --vs-sidebar: #202329;
-  --vs-panel: #242832;
-  --vs-input: #171a20;
-  --vs-border: #343a45;
-  --vs-text: #d7dae0;
-  --vs-muted: #8b93a1;
-  --vs-accent: #4aa3ff;
-  --vs-accent-soft: rgba(74, 163, 255, 0.13);
-  --vs-hover: #2a303a;
-  --vs-active: #2d3542;
+  --vs-bg: #111318;
+  --vs-sidebar: #171a21;
+  --vs-panel: #1a1e26;
+  --vs-input: #12151b;
+  --vs-border: #2a303a;
+  --vs-text: #e3e7ee;
+  --vs-muted: #8f98a8;
+  --vs-accent: #7ab7ff;
+  --vs-accent-soft: rgba(122, 183, 255, 0.12);
+  --vs-hover: #202630;
+  --vs-active: #242c38;
 }
 
 [data-theme="light"] {
-  --vs-bg: #f6f7f9;
-  --vs-sidebar: #eef1f5;
+  --vs-bg: #f8fafc;
+  --vs-sidebar: #f1f5f9;
   --vs-panel: #ffffff;
   --vs-input: #ffffff;
-  --vs-border: #d8dee8;
-  --vs-text: #252a33;
-  --vs-muted: #667085;
+  --vs-border: #dde4ee;
+  --vs-text: #1f2937;
+  --vs-muted: #6b7280;
   --vs-accent: #0969da;
   --vs-accent-soft: rgba(9, 105, 218, 0.1);
-  --vs-hover: #e6ebf2;
-  --vs-active: #dde7f5;
+  --vs-hover: #edf2f7;
+  --vs-active: #e5eef9;
 }
 
 html, body, #root {
@@ -92,8 +92,18 @@ select {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes menu-tray-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 .page-transition {
   animation: fade-in 0.15s ease-out;
+}
+
+.menu-tray {
+  animation: menu-tray-in 0.14s ease-out;
+  transform-origin: bottom center;
 }
 
 @media (max-width: 760px) {
