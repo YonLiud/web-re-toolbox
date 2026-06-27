@@ -13,6 +13,7 @@ import BitwiseCalculator from './bitwise-calculator'
 import RegexTester from './regex-tester'
 import HexViewer from './hex-viewer'
 import HexCalculator from './hex-calculator'
+import CSPAnalyzer from './csp-analyzer'
 import PathTraversal from './path-traversal'
 import XSSEncoder from './xss-encoder'
 import HttpRequest from './http-request'
@@ -28,20 +29,24 @@ export interface ToolGroup {
 
 export const toolGroups: ToolGroup[] = [
   {
-    name: 'Web & Pentest',
-    tools: [SQLi, XSSEncoder, PathTraversal, HttpRequest, JWTDecoder, BufferOverflow],
+    name: 'Web',
+    tools: [HttpRequest, JWTDecoder, CSPAnalyzer, SQLi, XSSEncoder, PathTraversal],
   },
   {
-    name: 'Encoding & Crypto',
-    tools: [EncodeDecode, HashCalculator, HexCalculator, HashIdentifier, XORCalculator, NumberBase],
+    name: 'Encode',
+    tools: [HexCalculator, EncodeDecode, StringConverter, NumberBase, HashCalculator, HashIdentifier],
   },
   {
-    name: 'Reverse Engineering',
-    tools: [HexViewer, StringTable, StringConverter, BitwiseCalculator],
+    name: 'Binary',
+    tools: [HexViewer, XORCalculator, BitwiseCalculator, BufferOverflow, StringTable],
   },
   {
-    name: 'Shells & Network',
-    tools: [ReverseShell, ShellUpgrade, IPSubnet, UnixPermissions, RegexTester],
+    name: 'Ops',
+    tools: [ReverseShell, ShellUpgrade, IPSubnet],
+  },
+  {
+    name: 'Utils',
+    tools: [RegexTester, UnixPermissions],
   },
 ]
 
