@@ -1,10 +1,75 @@
 import { useState, useMemo } from 'react'
+import Fuse from 'fuse.js'
 import { Link, NavLink } from 'react-router-dom'
 import { Sun, Moon, GithubLogo, MagnifyingGlass, SquaresFour, X } from '@phosphor-icons/react'
 import { toolGroups, tools } from '../tools/registry'
+import type { Tool } from '../tools/types'
 import { useTheme } from '../context/ThemeContext'
 
 type CategoryFilter = 'all' | string
+
+interface SearchDoc {
+  tool: Tool
+  group: string
+  aliases: string[]
+  haystack: string
+}
+
+const SEARCH_ALIASES: Record<string, string[]> = {
+  'jwt-decoder': ['jwt', 'token', 'bearer', 'claims', 'auth', 'json web token'],
+  'encode-decode': ['base64', 'urlencode', 'urldecode', 'percent encode', 'decode', 'encode'],
+  'hex-calculator': ['hex', 'bytes', 'ascii', 'utf8', 'utf-8', 'decimal', 'binary', 'byte inspector'],
+  'hex-viewer': ['hexdump', 'hex dump', 'offset', 'ascii panel', 'binary view'],
+  'buffer-overflow': ['bo', 'bof', 'overflow', 'eip', 'rip', 'offset', 'cyclic', 'pattern', 'shellcode', 'nop'],
+  'reverse-shell': ['rev shell', 'revshell', 'listener', 'netcat', 'nc', 'payload'],
+  'shell-upgrade': ['tty', 'pty', 'stty', 'interactive shell', 'upgrade shell', 'rlwrap', 'socat'],
+  'ip-subnet': ['cidr', 'subnet', 'mask', 'netmask', 'network', 'broadcast', 'hosts'],
+  'http-request': ['curl', 'raw http', 'headers', 'request', 'method', 'body'],
+  'xss-encoder': ['xss', 'waf', 'bypass', 'html encode', 'javascript', 'payload'],
+  'path-traversal': ['lfi', 'rfi', 'directory traversal', 'dot dot slash', 'etc passwd'],
+  sqli: ['sql', 'sql injection', 'union', 'blind', 'time based', 'database'],
+  'hash-calculator': ['sha', 'sha256', 'sha1', 'digest', 'crypto hash'],
+  'hash-identifier': ['identify hash', 'md5', 'ntlm', 'bcrypt', 'argon2'],
+  'xor-calculator': ['xor', 'single byte', 'bruteforce', 'brute force', 'key'],
+  'number-base': ['base convert', 'decimal', 'hexadecimal', 'octal', 'binary'],
+  'bitwise-calculator': ['and', 'or', 'not', 'shift', 'bits', 'bit operations'],
+  'regex-tester': ['regex', 'regexp', 'regular expression', 'pattern match'],
+  'unix-permissions': ['chmod', 'permissions', 'suid', 'sgid', 'sticky', 'octal'],
+  'string-converter': ['unicode', 'codepoint', 'utf16', 'utf32', 'escape'],
+  'string-table': ['index string', 'character index', 'chars', 'positions'],
+  'csp-analyzer': ['content security policy', 'csp', 'headers', 'script src', 'unsafe inline'],
+}
+
+const searchDocs: SearchDoc[] = toolGroups.flatMap(group =>
+  group.tools.map(tool => {
+    const aliases = SEARCH_ALIASES[tool.meta.slug] ?? []
+    return {
+      tool,
+      group: group.name,
+      aliases,
+      haystack: [
+        tool.meta.name,
+        tool.meta.description,
+        tool.meta.tags.join(' '),
+        aliases.join(' '),
+        group.name,
+      ].join(' '),
+    }
+  })
+)
+
+const fuse = new Fuse(searchDocs, {
+  threshold: 0.38,
+  ignoreLocation: true,
+  minMatchCharLength: 2,
+  keys: [
+    { name: 'tool.meta.name', weight: 0.45 },
+    { name: 'aliases', weight: 0.28 },
+    { name: 'tool.meta.tags', weight: 0.14 },
+    { name: 'group', weight: 0.08 },
+    { name: 'tool.meta.description', weight: 0.05 },
+  ],
+})
 
 export function Sidebar() {
   const { theme, toggle } = useTheme()
@@ -13,19 +78,24 @@ export function Sidebar() {
 
   const filteredGroups = useMemo(() => {
     const q = query.trim().toLowerCase()
+
+    if (!q) {
+      return toolGroups
+        .filter(group => activeCategory === 'all' || group.name === activeCategory)
+        .map(group => ({ ...group }))
+    }
+
+    const docs = fuse.search(q)
+      .map(result => result.item)
+      .filter(doc => activeCategory === 'all' || doc.group === activeCategory)
+
     return toolGroups
       .filter(group => activeCategory === 'all' || group.name === activeCategory)
       .map(group => ({
         ...group,
-        tools: group.tools.filter(({ meta }) => {
-          const matchesQuery = q
-            ? meta.name.toLowerCase().includes(q) ||
-              meta.description.toLowerCase().includes(q) ||
-              meta.tags.some(tag => tag.toLowerCase().includes(q)) ||
-              group.name.toLowerCase().includes(q)
-            : true
-          return matchesQuery
-        }),
+        tools: docs
+          .filter(doc => doc.group === group.name)
+          .map(doc => doc.tool),
       }))
       .filter(group => group.tools.length > 0)
   }, [query, activeCategory])
@@ -59,7 +129,7 @@ export function Sidebar() {
             type="text"
             value={query}
             onChange={e => setQuery(e.target.value)}
-            placeholder="Search tools, tags..."
+            placeholder="Search tools, aliases..."
             className="w-full bg-transparent text-sm text-vs-text outline-none placeholder:text-vs-muted"
           />
           {query && (
