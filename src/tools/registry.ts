@@ -12,12 +12,14 @@ import IPSubnet from './ip-subnet'
 import BitwiseCalculator from './bitwise-calculator'
 import RegexTester from './regex-tester'
 import HexViewer from './hex-viewer'
+import HexCalculator from './hex-calculator'
 import PathTraversal from './path-traversal'
 import XSSEncoder from './xss-encoder'
 import HttpRequest from './http-request'
 import SQLi from './sqli'
 import ShellUpgrade from './shell-upgrade'
 import ReverseShell from './reverse-shell'
+import BufferOverflow from './buffer-overflow'
 
 export interface ToolGroup {
   name: string
@@ -27,11 +29,11 @@ export interface ToolGroup {
 export const toolGroups: ToolGroup[] = [
   {
     name: 'Web & Pentest',
-    tools: [SQLi, XSSEncoder, PathTraversal, HttpRequest, JWTDecoder],
+    tools: [SQLi, XSSEncoder, PathTraversal, HttpRequest, JWTDecoder, BufferOverflow],
   },
   {
     name: 'Encoding & Crypto',
-    tools: [EncodeDecode, HashCalculator, HashIdentifier, XORCalculator, NumberBase],
+    tools: [EncodeDecode, HashCalculator, HexCalculator, HashIdentifier, XORCalculator, NumberBase],
   },
   {
     name: 'Reverse Engineering',

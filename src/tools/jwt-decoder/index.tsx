@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { Key, WarningCircle, CheckCircle, Clock } from '@phosphor-icons/react'
 import { ToolLayout } from '../../components/ToolLayout'
 import type { Tool } from '../types'
@@ -6,7 +6,9 @@ import type { Tool } from '../types'
 function base64urlDecode(str: string): string {
   const base64 = str.replace(/-/g, '+').replace(/_/g, '/')
   const padded = base64 + '=='.slice((base64.length % 4) || 4)
-  return decodeURIComponent(escape(atob(padded)))
+  const binary = atob(padded)
+  const bytes = Uint8Array.from(binary, char => char.charCodeAt(0))
+  return new TextDecoder().decode(bytes)
 }
 
 function parseJWT(token: string): { header: object; payload: object; signature: string } | null {
@@ -49,10 +51,10 @@ function Section({ title, data }: { title: string; data: object }) {
 
 function JWTDecoder() {
   const [input, setInput] = useState('')
+  const [now] = useState(() => Math.floor(Date.now() / 1000))
 
   const result = useMemo(() => input.trim() ? parseJWT(input) : null, [input])
 
-  const now = Math.floor(Date.now() / 1000)
   const payload = result?.payload as Record<string, unknown> | undefined
   const exp = payload?.exp as number | undefined
   const nbf = payload?.nbf as number | undefined
