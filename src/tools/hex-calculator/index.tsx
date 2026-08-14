@@ -122,17 +122,30 @@ export function HexCalculator() {
             className="flex h-11 w-full rounded-md border border-input bg-transparent px-3 font-mono text-base shadow-xs outline-none placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           />
         </label>
-        <div className="space-y-2">
+        <div className="space-y-3">
           <div className="flex items-center justify-between gap-4">
             <span className="text-sm font-medium">Result</span>
             <button type="button" onClick={copyOutput} disabled={!output} className="inline-flex h-9 items-center justify-center rounded-md border border-input bg-background px-3 text-sm font-medium shadow-xs transition-colors hover:bg-accent hover:text-accent-foreground disabled:pointer-events-none disabled:opacity-50">
               {copied ? 'Copied' : 'Copy hex'}
             </button>
           </div>
-          <output className="block rounded-md border bg-muted p-4 font-mono text-2xl font-semibold tracking-tight">
-            {result.error ? <span className="text-red-600">{result.error}</span> : output || 'Enter an expression'}
-          </output>
-          {result.value !== undefined && <p className="font-mono text-sm text-muted-foreground">{result.value.toString(10)} decimal</p>}
+
+          {result.error ? (
+            <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-600">{result.error}</div>
+          ) : (
+            <div className="grid gap-3 sm:grid-cols-2">
+              <output className="rounded-lg border bg-muted p-4">
+                <span className="block text-xs font-medium uppercase tracking-wider text-muted-foreground">Hexadecimal</span>
+                <span className="mt-2 block break-all font-mono text-2xl font-semibold tracking-tight">{output || '—'}</span>
+              </output>
+              <output className="rounded-lg border bg-muted p-4">
+                <span className="block text-xs font-medium uppercase tracking-wider text-muted-foreground">Decimal</span>
+                <span className="mt-2 block break-all font-mono text-2xl font-semibold tracking-tight">
+                  {result.value?.toString(10) ?? '—'}
+                </span>
+              </output>
+            </div>
+          )}
         </div>
       </div>
     </section>
