@@ -1,128 +1,56 @@
 @import "tailwindcss";
 
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
 :root {
-  --vs-bg: #111318;
-  --vs-sidebar: #171a21;
-  --vs-panel: #1a1e26;
-  --vs-input: #12151b;
-  --vs-border: #2a303a;
-  --vs-text: #e3e7ee;
-  --vs-muted: #8f98a8;
-  --vs-accent: #7ab7ff;
-  --vs-accent-soft: rgba(122, 183, 255, 0.12);
-  --vs-hover: #202630;
-  --vs-active: #242c38;
+  --background: oklch(0.985 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
 }
 
 [data-theme="dark"] {
-  --vs-bg: #111318;
-  --vs-sidebar: #171a21;
-  --vs-panel: #1a1e26;
-  --vs-input: #12151b;
-  --vs-border: #2a303a;
-  --vs-text: #e3e7ee;
-  --vs-muted: #8f98a8;
-  --vs-accent: #7ab7ff;
-  --vs-accent-soft: rgba(122, 183, 255, 0.12);
-  --vs-hover: #202630;
-  --vs-active: #242c38;
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --border: oklch(0.269 0 0);
+  --input: oklch(0.269 0 0);
+  --ring: oklch(0.556 0 0);
 }
 
-[data-theme="light"] {
-  --vs-bg: #f8fafc;
-  --vs-sidebar: #f1f5f9;
-  --vs-panel: #ffffff;
-  --vs-input: #ffffff;
-  --vs-border: #dde4ee;
-  --vs-text: #1f2937;
-  --vs-muted: #6b7280;
-  --vs-accent: #0969da;
-  --vs-accent-soft: rgba(9, 105, 218, 0.1);
-  --vs-hover: #edf2f7;
-  --vs-active: #e5eef9;
-}
+* { border-color: var(--border); }
 
-html, body, #root {
-  height: 100%;
+html, body, #root { min-height: 100%; }
+
+body {
   margin: 0;
-  padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-  background-color: var(--vs-bg);
-  color: var(--vs-text);
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-button,
-input,
-textarea,
-select {
-  font: inherit;
-}
-
-::selection {
-  background: var(--vs-accent-soft);
-  color: var(--vs-text);
-}
-
-/* Custom scrollbars */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--vs-border);
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--vs-muted);
-}
-
-* {
-  scrollbar-width: thin;
-  scrollbar-color: var(--vs-border) transparent;
-}
-
-@keyframes fade-in {
-  from { opacity: 0; transform: translateY(4px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes menu-tray-in {
-  from { opacity: 0; transform: translateY(8px) scale(0.985); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-.page-transition {
-  animation: fade-in 0.15s ease-out;
-}
-
-.menu-tray {
-  animation: menu-tray-in 0.14s ease-out;
-  transform-origin: bottom center;
-}
-
-@media (max-width: 760px) {
-  .desktop-notice {
-    display: block;
-  }
-}
-
-@layer utilities {
-  .bg-vs-bg       { background-color: var(--vs-bg); }
-  .bg-vs-sidebar  { background-color: var(--vs-sidebar); }
-  .bg-vs-panel    { background-color: var(--vs-panel); }
-  .bg-vs-input    { background-color: var(--vs-input); }
-  .bg-vs-hover    { background-color: var(--vs-hover); }
-  .bg-vs-active   { background-color: var(--vs-active); }
-  .bg-vs-accent-soft { background-color: var(--vs-accent-soft); }
-  .text-vs-text   { color: var(--vs-text); }
-  .text-vs-muted  { color: var(--vs-muted); }
-  .text-vs-accent { color: var(--vs-accent); }
-  .border-vs-border { border-color: var(--vs-border); }
-  .border-vs-accent { border-color: var(--vs-accent); }
-}
+button, textarea { font: inherit; }
